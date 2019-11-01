@@ -1,6 +1,5 @@
 ﻿#include "stdafx.h"
 #include <math.h>
-#include <assert.h>
 #include "FScalar.h"
 
 FScalar FScalar::retBuffer(0);
@@ -8,6 +7,16 @@ FScalar FScalar::retBuffer(0);
 FScalar::FScalar(float floatValue)
 {
 	rawValue = (int)(floatValue * fractionRate);
+}
+
+inline FScalar::operator int()
+{
+	return rawValue;
+}
+
+inline FScalar::operator float()
+{
+	return rawValue * fractionRateReciprocal;
 }
 
 inline FScalar & FScalar::operator =(const FScalar & fs)
@@ -44,4 +53,34 @@ inline std::ostream & operator<<(std::ostream & os, const FScalar & fs)
 {
 	os << fs.rawValue * fs.fractionRateReciprocal;
 	return os;
+}
+
+FScalar & sqrt(const FScalar & fs)
+{
+	return FScalar::retBuffer;
+}
+
+FScalar & pow(const FScalar & fs)
+{
+	return FScalar::retBuffer;
+}
+
+FScalar & log(const FScalar & fs)
+{
+	return FScalar::retBuffer;
+}
+
+FScalar & exp(const FScalar & fs)
+{
+	return FScalar::retBuffer;
+}
+
+FScalar & sin(const FScalar & fs)
+{
+	return FScalar::retBuffer;
+}
+
+FScalar & asin(const FScalar & fs)
+{
+	return FScalar::retBuffer;
 }

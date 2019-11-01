@@ -96,7 +96,8 @@ void PerformanceCheck()
 
 int main()
 {
-	PerformanceCheck();
+	//PerformanceCheck();
+	cout << sqrt(FScalar(1.0f)) << endl;
 	int a;
 	cin >> a;
 }

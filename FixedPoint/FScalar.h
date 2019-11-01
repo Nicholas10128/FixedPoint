@@ -7,17 +7,26 @@
 /*****************************
 [-2097152.0~2097151.990234375]
 *****************************/
-class CLASS_DECLSPEC FScalar
+class DllExport FScalar
 {
 public:
 	FScalar(float floatValue);
 
+	inline operator int();
+	inline operator float();
 	inline FScalar & operator =(const FScalar & fs);
-	inline friend CLASS_DECLSPEC FScalar & operator +(const FScalar & fs1, const FScalar & fs2);
-	inline friend CLASS_DECLSPEC FScalar & operator -(const FScalar & fs1, const FScalar & fs2);
-	inline friend CLASS_DECLSPEC FScalar & operator *(const FScalar & fs1, const FScalar & fs2);
-	inline friend CLASS_DECLSPEC FScalar & operator /(const FScalar & fs1, const FScalar & fs2);
-	inline friend CLASS_DECLSPEC std::ostream & operator<<(std::ostream & os, const FScalar & fs);
+	inline friend DllExport FScalar & operator +(const FScalar & fs1, const FScalar & fs2);
+	inline friend DllExport FScalar & operator -(const FScalar & fs1, const FScalar & fs2);
+	inline friend DllExport FScalar & operator *(const FScalar & fs1, const FScalar & fs2);
+	inline friend DllExport FScalar & operator /(const FScalar & fs1, const FScalar & fs2);
+	inline friend DllExport std::ostream & operator<<(std::ostream & os, const FScalar & fs);
+
+	inline friend DllExport FScalar & sqrt(const FScalar & fs);
+	inline friend DllExport FScalar & pow(const FScalar & fs);
+	inline friend DllExport FScalar & log(const FScalar & fs);
+	inline friend DllExport FScalar & exp(const FScalar & fs);
+	inline friend DllExport FScalar & sin(const FScalar & fs);
+	inline friend DllExport FScalar & asin(const FScalar & fs);
 
 private:
 	int32_t rawValue;
