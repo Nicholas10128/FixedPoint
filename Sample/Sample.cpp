@@ -1,21 +1,102 @@
-﻿// Sample.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
-//
-
-#include "pch.h"
+﻿#include "pch.h"
 #include <iostream>
+#include <windows.h>
+#include "../FixedPoint/FScalar.h"
+
+using namespace std;
+
+float Add(const float f1, const float f2)
+{
+	return f1 + f2;
+}
+
+float Minus(const float f1, const float f2)
+{
+	return f1 - f2;
+}
+
+float Multiply(const float f1, const float f2)
+{
+	return f1 * f2;
+}
+
+float Divide(const float f1, const float f2)
+{
+	return f1 / f2;
+}
+
+// Since the Release version does a lot of optimizations on the test code itself and
+// can't get fair test data, you can only use Debug to run the following test code.
+void PerformanceCheck()
+{
+	const int calculateTimes = 10000000;
+	float f1 = 12.5f, f2 = 0.25f;
+	FScalar fs1(f1), fs2(f2);
+	cout << "Start compare for + operator by calculate " << calculateTimes << " times." << endl;
+	DWORD now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		fs1 + fs2;
+	}
+	DWORD elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		Add(f1, f2);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for - operator by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		fs1 - fs2;
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		Minus(f1, f2);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for * operator by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		fs1 * fs2;
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		Multiply(f1, f2);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for / operator by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		fs1 / fs2;
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		Divide(f1, f2);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
+}
 
 int main()
 {
-    std::cout << "Hello World!\n"; 
+	PerformanceCheck();
+	int a;
+	cin >> a;
 }
-
-// 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
-// 调试程序: F5 或调试 >“开始调试”菜单
-
-// 入门提示: 
-//   1. 使用解决方案资源管理器窗口添加/管理文件
-//   2. 使用团队资源管理器窗口连接到源代码管理
-//   3. 使用输出窗口查看生成输出和其他消息
-//   4. 使用错误列表窗口查看错误
-//   5. 转到“项目”>“添加新项”以创建新的代码文件，或转到“项目”>“添加现有项”以将现有代码文件添加到项目
-//   6. 将来，若要再次打开此项目，请转到“文件”>“打开”>“项目”并选择 .sln 文件
