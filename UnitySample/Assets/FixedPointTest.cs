@@ -40,6 +40,7 @@ public class FixedPointTest : MonoBehaviour
         Debug.Log(Internal_GetFloatValue(Internal_Add(fs1, fs2)));
         Debug.Log(Internal_GetFloatValue(Internal_Minus(fs1, fs2)));
         Debug.Log(Internal_GetFloatValue(Internal_Multiply(fs1, fs2)));
+        Debug.Log(Internal_GetFloatValue(Internal_Divide(fs1, fs2)));
         Debug.Log(Internal_GetFloatValue(Internal_Sqrt(fs1)));
         Debug.Log(Internal_GetFloatValue(Internal_Pow(fs1)));
         Debug.Log(Internal_GetFloatValue(Internal_Log(fs1)));
