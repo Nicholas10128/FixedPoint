@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include <iostream>
 #include <windows.h>
+#include <math.h>
 #include "../FixedPoint/FScalar.h"
 
 using namespace std;
@@ -92,12 +93,91 @@ void PerformanceCheck()
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
+	//
+	cout << "Start compare for sqrt function by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		sqrt(fs1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		sqrt(f1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for pow function by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		pow(fs1, fs2);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		pow(f1, f2);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for log2 function by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		log2(fs1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		log2(f1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for log function by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		log(fs1, fs2);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		log(f2) / log(f1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for exp function by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		exp(fs1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		exp(f1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
 }
 
 int main()
 {
-	//PerformanceCheck();
-	cout << sqrt(FScalar(1.0f)) << endl;
+	PerformanceCheck();
+	//cout << pow(FScalar(1.1f), FScalar(2.2f)) << endl;
+	//cout << pow(FScalar(2.2f), FScalar(3.3f)) << endl;
+	//cout << pow(FScalar(3.3f), FScalar(4.4f)) << endl;
+	//cout << pow(FScalar(3.1f), FScalar(4.6f)) << endl;
 	int a;
 	cin >> a;
 }

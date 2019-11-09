@@ -44,14 +44,19 @@ extern "C"
 		return &sqrt(*fs);
 	}
 
-	DllExport FScalar* Internal_Pow(FScalar* fs)
+	DllExport FScalar* Internal_Pow(FScalar* base, FScalar* exponential)
 	{
-		return &pow(*fs);
+		return &pow(*base, *exponential);
 	}
 
-	DllExport FScalar* Internal_Log(FScalar* fs)
+	DllExport FScalar* Internal_Log2(FScalar* fs)
 	{
-		return &log(*fs);
+		return &log2(*fs);
+	}
+
+	DllExport FScalar* Internal_Log(FScalar* base, FScalar* fs)
+	{
+		return &log(*base, *fs);
 	}
 
 	DllExport FScalar* Internal_Exp(FScalar* fs)

@@ -22,8 +22,9 @@ public:
 	inline friend DllExport std::ostream & operator<<(std::ostream & os, const FScalar & fs);
 
 	inline friend DllExport FScalar & sqrt(const FScalar & fs);
-	inline friend DllExport FScalar & pow(const FScalar & fs);
-	inline friend DllExport FScalar & log(const FScalar & fs);
+	inline friend DllExport FScalar & pow(const FScalar & base, const FScalar & exponential);
+	inline friend DllExport FScalar & log2(const FScalar & fs);
+	inline friend DllExport FScalar & log(const FScalar & base, const FScalar & fs);
 	inline friend DllExport FScalar & exp(const FScalar & fs);
 	inline friend DllExport FScalar & sin(const FScalar & fs);
 	inline friend DllExport FScalar & asin(const FScalar & fs);
