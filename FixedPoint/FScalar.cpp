@@ -9,7 +9,12 @@ const int32_t e = 2783;
 
 FScalar::FScalar(float floatValue)
 {
-	rawValue = (int)(floatValue * fractionRate);
+	rawValue = (int32_t)(floatValue * fractionRate);
+}
+
+FScalar::FScalar(int32_t scalarValue)
+{
+	rawValue = scalarValue;
 }
 
 inline FScalar::operator int()
@@ -89,16 +94,14 @@ FScalar & sqrt(const FScalar & fs)
 	int32_t n, fenzi, fenmu;
 	int64_t fenzi2, fenzi4, fenmu2, fenmu4;
 	calculateParameters(fs.rawValue, true, n, fenzi, fenmu, fenzi2, fenzi4, fenmu2, fenmu4);
-	int64_t value64 = (1i64 << ((n - FScalar::fractionBits) >> 1)) * (234 + (1331 * fenzi * fenmu2 * fenmu - 932 * fenzi2 * fenmu2 + 513 * fenzi2 * fenzi * fenmu - 125 * fenzi4) / fenmu4);
-	FScalar::retBuffer.rawValue = (int32_t)value64;
+	FScalar::retBuffer.rawValue = (int32_t)((1i64 << ((n - FScalar::fractionBits) >> 1)) * (234 + (1331 * fenzi * fenmu2 * fenmu - 932 * fenzi2 * fenmu2 + 513 * fenzi2 * fenzi * fenmu - 125 * fenzi4) / fenmu4));
 	return FScalar::retBuffer;
 }
 
 // 对于22bit整数位的32bit定点数，pow的计算过程中精度丢失严重，几乎不可用
 FScalar & pow(const FScalar & base, const FScalar & exponential)
 {
-	FScalar logBase(0), logE(1.4427f);
-	logBase.rawValue = log2(base).rawValue;
+	FScalar logBase(log2(base).rawValue), logE(1.4427f);
 	FScalar::retBuffer = exp(exponential * logBase / logE);
 	return FScalar::retBuffer;
 }
@@ -113,8 +116,7 @@ FScalar & log2(const FScalar & fs)
 	int32_t n, fenzi, fenmu;
 	int64_t fenzi2, fenzi4, fenmu2, fenmu4;
 	calculateParameters(fs.rawValue, false, n, fenzi, fenmu, fenzi2, fenzi4, fenmu2, fenmu4);
-	int64_t value64 = ((n - FScalar::fractionBits) << FScalar::fractionBits) + (-6163 * fenmu4 + 28610 * fenzi * fenmu2 * fenmu - 60718 * fenzi2 * fenmu2 + 59463 * fenzi2 * fenzi * fenmu - 21202 * fenzi4) / fenmu4;
-	FScalar::retBuffer.rawValue = (int32_t)value64;
+	FScalar::retBuffer.rawValue = (int32_t)(((n - FScalar::fractionBits) << FScalar::fractionBits) + (-6163 * fenmu4 + 28610 * fenzi * fenmu2 * fenmu - 60718 * fenzi2 * fenmu2 + 59463 * fenzi2 * fenzi * fenmu - 21202 * fenzi4) / fenmu4);
 	return FScalar::retBuffer;
 }
 
@@ -165,9 +167,59 @@ FScalar & exp(const FScalar & fs)
 	return FScalar::retBuffer;
 }
 
+FScalar & _sin(const FScalar & fs)
+{
+	int32_t fenzi = fs.rawValue;
+	int32_t fenmu = 1 << FScalar::fractionBits;
+	int64_t fenzi2 = fenzi * fenzi;
+	int64_t fenzi4 = fenzi2 * fenzi2;
+	int64_t fenmu2 = fenmu * fenmu;
+	int64_t fenmu4 = fenmu2 * fenmu2;
+	FScalar::retBuffer.rawValue = (int32_t)((1023 * fenzi * fenmu2 * fenmu + fenzi2 * fenmu2 - 179 * fenzi2 * fenzi * fenmu + 14 * fenzi4) / fenmu4);
+	return FScalar::retBuffer;
+}
+
+FScalar & _cos(const FScalar & fs)
+{
+	int32_t fenzi = fs.rawValue;
+	int32_t fenmu = 1 << FScalar::fractionBits;
+	int64_t fenzi2 = fenzi * fenzi;
+	int64_t fenzi4 = fenzi2 * fenzi2;
+	int64_t fenmu2 = fenmu * fenmu;
+	int64_t fenmu4 = fenmu2 * fenmu2;
+	FScalar::retBuffer.rawValue = (int32_t)(1023 + (- 514 * fenzi2 * fenmu2 + 3 * fenzi2 * fenzi * fenmu + 38 * fenzi4) / fenmu4);
+	return FScalar::retBuffer;
+}
+
 FScalar & sin(const FScalar & fs)
 {
-	return FScalar::retBuffer;
+	if (fs.rawValue >= 804)
+	{
+		FScalar theta_2(fs.rawValue >> 1);
+		int32_t sinTheta_2_rawValue = sin(theta_2).rawValue;
+		int32_t cosTheta_2_rawValue = cos(theta_2).rawValue;
+		FScalar::retBuffer.rawValue = ((int64_t)sinTheta_2_rawValue * cosTheta_2_rawValue) >> FScalar::fractionBits;
+		FScalar::retBuffer.rawValue <<= 1;
+		return FScalar::retBuffer;
+	}
+	return _sin(fs);
+}
+
+FScalar & cos(const FScalar & fs)
+{
+	if (fs.rawValue >= 804)
+	{
+		FScalar theta_2(fs.rawValue >> 1);
+		int64_t cosTheta_2_rawValue = cos(theta_2).rawValue;
+		int64_t sinTheta_2_rawValue = sin(theta_2).rawValue;
+		cosTheta_2_rawValue *= cosTheta_2_rawValue;
+		cosTheta_2_rawValue >>= FScalar::fractionBits;
+		sinTheta_2_rawValue *= sinTheta_2_rawValue;
+		sinTheta_2_rawValue >>= FScalar::fractionBits;
+		FScalar::retBuffer.rawValue = cosTheta_2_rawValue - sinTheta_2_rawValue;
+		return FScalar::retBuffer;
+	}
+	return _cos(fs);
 }
 
 FScalar & asin(const FScalar & fs)

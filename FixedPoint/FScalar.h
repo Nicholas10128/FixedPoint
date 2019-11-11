@@ -11,6 +11,7 @@ class DllExport FScalar
 {
 public:
 	FScalar(float floatValue);
+	FScalar(int32_t scalarValue);
 
 	inline operator int();
 	inline operator float();
@@ -27,6 +28,7 @@ public:
 	inline friend DllExport FScalar & log(const FScalar & base, const FScalar & fs);
 	inline friend DllExport FScalar & exp(const FScalar & fs);
 	inline friend DllExport FScalar & sin(const FScalar & fs);
+	inline friend DllExport FScalar & cos(const FScalar & fs);
 	inline friend DllExport FScalar & asin(const FScalar & fs);
 
 private:
@@ -38,4 +40,7 @@ private:
 	const float_t fractionRateReciprocal = 1.0f / fractionRate;
 	
 	static FScalar retBuffer;
+
+	inline friend DllExport FScalar & _sin(const FScalar & fs);
+	inline friend DllExport FScalar & _cos(const FScalar & fs);
 };

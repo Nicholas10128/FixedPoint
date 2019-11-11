@@ -169,15 +169,41 @@ void PerformanceCheck()
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for sin function by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		sin(fs1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		sin(f1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for cos function by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		cos(fs1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		cos(f1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
 }
 
 int main()
 {
 	PerformanceCheck();
-	//cout << pow(FScalar(1.1f), FScalar(2.2f)) << endl;
-	//cout << pow(FScalar(2.2f), FScalar(3.3f)) << endl;
-	//cout << pow(FScalar(3.3f), FScalar(4.4f)) << endl;
-	//cout << pow(FScalar(3.1f), FScalar(4.6f)) << endl;
 	int a;
 	cin >> a;
 }
