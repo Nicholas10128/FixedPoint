@@ -199,16 +199,71 @@ void PerformanceCheck()
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for asin function by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		asin(fs1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		asin(f1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for acos function by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		acos(fs1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		acos(f1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for atan function by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		atan(fs1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		atan(f1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for acot function by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		acot(fs1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		atan(1.0 / f1);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
 }
 
 int main()
 {
-	//PerformanceCheck();
-	cout << acos(FScalar(-1.0f)) << endl;
-	cout << acos(FScalar(-0.5f)) << endl;
-	cout << acos(FScalar(0.0f)) << endl;
-	cout << acos(FScalar(0.5f)) << endl;
-	cout << acos(FScalar(1.0f)) << endl;
+	PerformanceCheck();
 	int a;
 	cin >> a;
 }

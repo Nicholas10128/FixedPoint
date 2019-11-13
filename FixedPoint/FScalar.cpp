@@ -263,7 +263,6 @@ FScalar & asin(const FScalar & fs)
 	return FScalar::retBuffer;
 }
 
-// 算出来不对的
 FScalar & acos(const FScalar & fs)
 {
 	int32_t x = fs.rawValue;
@@ -307,5 +306,16 @@ FScalar & atan(const FScalar & fs)
 
 FScalar & acot(const FScalar & fs)
 {
+	int32_t rawValue = fs.rawValue;
+	bool isNegative = rawValue < 0;
+	if (isNegative)
+	{
+		rawValue = -rawValue;
+	}
+	FScalar::retBuffer = atan(FScalar((int32_t)(((int64_t)FScalar::fractionRate << FScalar::fractionBits) / rawValue)));
+	if (isNegative)
+	{
+		FScalar::retBuffer.rawValue = -FScalar::retBuffer.rawValue;
+	}
 	return FScalar::retBuffer;
 }
