@@ -133,12 +133,12 @@ FScalar & exp(const FScalar & fs)
 {
 	bool isNegative = fs.rawValue < 0;
 	int32_t wholePart = (isNegative ? -fs.rawValue : fs.rawValue) >> FScalar::fractionBits;
-	int64_t wholeResult = 1 << FScalar::fractionBits;
+	int64_t wholeResult = FScalar::fractionRate;
 	for (int i = 0; i < wholePart; i++)
 	{
 		wholeResult = (wholeResult * e) >> FScalar::fractionBits;
 	}
-	int32_t x = (int64_t(fs.rawValue - (wholePart << FScalar::fractionBits)) << FScalar::fractionBits) / (1 << FScalar::fractionBits);
+	int32_t x = (int64_t(fs.rawValue - (wholePart << FScalar::fractionBits)) << FScalar::fractionBits) / FScalar::fractionRate;
 	int64_t x2 = (int64_t)x * x >> FScalar::fractionBits;
 	int64_t x4 = x2 * x2 >> FScalar::fractionBits;
 	FScalar::retBuffer.rawValue = (int32_t)(wholeResult * (1024 + ((1023 * x + 520 * x2 + ((146 * x2) >> FScalar::fractionBits) * x + 69 * x4) >> FScalar::fractionBits)) >> FScalar::fractionBits);
@@ -152,7 +152,7 @@ FScalar & exp(const FScalar & fs)
 FScalar & _sin(const FScalar & fs)
 {
 	int32_t fenzi = fs.rawValue;
-	int32_t fenmu = 1 << FScalar::fractionBits;
+	int32_t fenmu = FScalar::fractionRate;
 	int64_t fenzi2 = fenzi * fenzi;
 	int64_t fenzi4 = fenzi2 * fenzi2;
 	int64_t fenmu2 = fenmu * fenmu;
@@ -164,7 +164,7 @@ FScalar & _sin(const FScalar & fs)
 FScalar & _cos(const FScalar & fs)
 {
 	int32_t fenzi = fs.rawValue;
-	int32_t fenmu = 1 << FScalar::fractionBits;
+	int32_t fenmu = FScalar::fractionRate;
 	int64_t fenzi2 = fenzi * fenzi;
 	int64_t fenzi4 = fenzi2 * fenzi2;
 	int64_t fenmu2 = fenmu * fenmu;
@@ -247,14 +247,41 @@ const int32_t atan1 = 804;
 FScalar & asin(const FScalar & fs)
 {
 	int32_t x = fs.rawValue;
+	if (x == FScalar::fractionRate)
+	{
+		FScalar::retBuffer.rawValue = pi_2;
+		return FScalar::retBuffer;
+	}
+	else if (x == -FScalar::fractionRate)
+	{
+		FScalar::retBuffer.rawValue = -pi_2;
+		return FScalar::retBuffer;
+	}
 	int64_t x2 = (int64_t)x * x >> FScalar::fractionBits;
 	int32_t fenmu = sqrt(FScalar((int32_t)((1i64 << FScalar::fractionBits) - x2))).rawValue;
 	FScalar::retBuffer = atan(FScalar((int32_t)((int64_t)x << FScalar::fractionBits) / fenmu));
 	return FScalar::retBuffer;
 }
 
+// 算出来不对的
 FScalar & acos(const FScalar & fs)
 {
+	int32_t x = fs.rawValue;
+	if (x == 0)
+	{
+		FScalar::retBuffer.rawValue = pi_2;
+		return FScalar::retBuffer;
+	}
+	int64_t x2 = (int64_t)x * x >> FScalar::fractionBits;
+	int32_t fenzi = sqrt(FScalar((int32_t)((1i64 << FScalar::fractionBits) - x2))).rawValue;
+	if (x < 0)
+	{
+		FScalar::retBuffer.rawValue = pi - atan(FScalar((int32_t)((int64_t)fenzi << FScalar::fractionBits) / (-x))).rawValue;
+	}
+	else
+	{
+		FScalar::retBuffer.rawValue = atan(FScalar((int32_t)((int64_t)fenzi << FScalar::fractionBits) / x)).rawValue;
+	}
 	return FScalar::retBuffer;
 }
 
@@ -262,11 +289,11 @@ FScalar & acos(const FScalar & fs)
 // 参数太大了基于int64的计算过程会发生溢出，无法得到正确结果。
 FScalar & atan(const FScalar & fs)
 {
-	bool xbelow1 = fs.rawValue < (1 << FScalar::fractionBits);
+	bool xbelow1 = fs.rawValue < FScalar::fractionRate;
 	int32_t x = fs.rawValue;
 	if (!xbelow1)
 	{
-		x = ((int64_t)(x - (1 << FScalar::fractionBits)) << FScalar::fractionBits) / (x + (1 << FScalar::fractionBits));
+		x = ((int64_t)(x - FScalar::fractionRate) << FScalar::fractionBits) / (x + FScalar::fractionRate);
 	}
 	int64_t x2 = (int64_t)x * x >> FScalar::fractionBits;
 	int64_t x4 = x2 * x2 >> FScalar::fractionBits;

@@ -204,10 +204,11 @@ void PerformanceCheck()
 int main()
 {
 	//PerformanceCheck();
-	cout << atan(FScalar(0.5f)) << endl;
-	cout << atan(FScalar(1.0f)) << endl;
-	cout << atan(FScalar(2.0f)) << endl;
-	cout << atan(FScalar(4.0f)) << endl;
+	cout << acos(FScalar(-1.0f)) << endl;
+	cout << acos(FScalar(-0.5f)) << endl;
+	cout << acos(FScalar(0.0f)) << endl;
+	cout << acos(FScalar(0.5f)) << endl;
+	cout << acos(FScalar(1.0f)) << endl;
 	int a;
 	cin >> a;
 }
