@@ -19,15 +19,23 @@ public class FixedPointTest : MonoBehaviour
     [DllImport("FixedPoint")]
     static extern IntPtr Internal_Sqrt(IntPtr fs);
     [DllImport("FixedPoint")]
-    static extern IntPtr Internal_Pow(IntPtr fs);
+    static extern IntPtr Internal_Pow(IntPtr fs1, IntPtr fs2);
     [DllImport("FixedPoint")]
-    static extern IntPtr Internal_Log(IntPtr fs);
+    static extern IntPtr Internal_Log(IntPtr fs1, IntPtr fs2);
     [DllImport("FixedPoint")]
     static extern IntPtr Internal_Exp(IntPtr fs);
     [DllImport("FixedPoint")]
     static extern IntPtr Internal_Sin(IntPtr fs);
     [DllImport("FixedPoint")]
+    static extern IntPtr Internal_Cos(IntPtr fs);
+    [DllImport("FixedPoint")]
     static extern IntPtr Internal_ASin(IntPtr fs);
+    [DllImport("FixedPoint")]
+    static extern IntPtr Internal_ACos(IntPtr fs);
+    [DllImport("FixedPoint")]
+    static extern IntPtr Internal_ATan(IntPtr fs);
+    [DllImport("FixedPoint")]
+    static extern IntPtr Internal_ACot(IntPtr fs);
     [DllImport("FixedPoint")]
     static extern int Internal_GetScalarValue(IntPtr fs);
     [DllImport("FixedPoint")]
@@ -42,10 +50,14 @@ public class FixedPointTest : MonoBehaviour
         Debug.Log(Internal_GetFloatValue(Internal_Multiply(fs1, fs2)));
         Debug.Log(Internal_GetFloatValue(Internal_Divide(fs1, fs2)));
         Debug.Log(Internal_GetFloatValue(Internal_Sqrt(fs1)));
-        Debug.Log(Internal_GetFloatValue(Internal_Pow(fs1)));
-        Debug.Log(Internal_GetFloatValue(Internal_Log(fs1)));
+        Debug.Log(Internal_GetFloatValue(Internal_Pow(fs1, fs2)));
+        Debug.Log(Internal_GetFloatValue(Internal_Log(fs1, fs2)));
         Debug.Log(Internal_GetFloatValue(Internal_Exp(fs1)));
         Debug.Log(Internal_GetFloatValue(Internal_Sin(fs1)));
+        Debug.Log(Internal_GetFloatValue(Internal_Cos(fs1)));
         Debug.Log(Internal_GetFloatValue(Internal_ASin(fs1)));
+        Debug.Log(Internal_GetFloatValue(Internal_ACos(fs1)));
+        Debug.Log(Internal_GetFloatValue(Internal_ATan(fs1)));
+        Debug.Log(Internal_GetFloatValue(Internal_ACot(fs1)));
     }
 }

@@ -69,9 +69,29 @@ extern "C"
 		return &sin(*fs);
 	}
 
+	DllExport FScalar* Internal_Cos(FScalar* fs)
+	{
+		return &cos(*fs);
+	}
+
 	DllExport FScalar* Internal_ASin(FScalar* fs)
 	{
 		return &asin(*fs);
+	}
+
+	DllExport FScalar* Internal_ACos(FScalar* fs)
+	{
+		return &acos(*fs);
+	}
+
+	DllExport FScalar* Internal_ATan(FScalar* fs)
+	{
+		return &atan(*fs);
+	}
+
+	DllExport FScalar* Internal_ACot(FScalar* fs)
+	{
+		return &acot(*fs);
 	}
 
 	DllExport int Internal_GetScalarValue(FScalar* fs)
