@@ -246,6 +246,10 @@ const int32_t atan1 = 804;
 
 FScalar & asin(const FScalar & fs)
 {
+	int32_t x = fs.rawValue;
+	int64_t x2 = (int64_t)x * x >> FScalar::fractionBits;
+	int32_t fenmu = sqrt(FScalar((int32_t)((1i64 << FScalar::fractionBits) - x2))).rawValue;
+	FScalar::retBuffer = atan(FScalar((int32_t)((int64_t)x << FScalar::fractionBits) / fenmu));
 	return FScalar::retBuffer;
 }
 
@@ -264,7 +268,7 @@ FScalar & atan(const FScalar & fs)
 	{
 		x = ((int64_t)(x - (1 << FScalar::fractionBits)) << FScalar::fractionBits) / (x + (1 << FScalar::fractionBits));
 	}
-	int64_t x2 = x * x >> FScalar::fractionBits;
+	int64_t x2 = (int64_t)x * x >> FScalar::fractionBits;
 	int64_t x4 = x2 * x2 >> FScalar::fractionBits;
 	FScalar::retBuffer.rawValue = -1 + (int32_t)((1024 * x - x2 - (376 * x2 >> FScalar::fractionBits) * x + 155 * x4) >> FScalar::fractionBits);
 	if (!xbelow1)
