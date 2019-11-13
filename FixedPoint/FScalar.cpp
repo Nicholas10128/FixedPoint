@@ -4,7 +4,6 @@
 
 FScalar FScalar::retBuffer(0);
 
-//const float e = 2.718281828459045f;
 const int32_t e = 2783;
 const int32_t pi = 3217;
 const int32_t pi_2 = pi >> 1;
@@ -82,8 +81,8 @@ void calculateParameters(int32_t rawValue, bool nMustBeEven, int32_t& n, int64_t
 	x4 = x2 * x2 >> FScalar::fractionBits;
 }
 
-// 参数的值域为[0, 2097151.937]：
-// 参数太大了基于int64的计算过程会发生溢出，无法得到正确结果。
+// The value range of the parameter is[0, 2097151.937]:
+// Too large parameter will cause the int64 - based calculation process overflow and the correct result will not be obtained.
 FScalar & sqrt(const FScalar & fs)
 {
 	int32_t n;
@@ -93,7 +92,7 @@ FScalar & sqrt(const FScalar & fs)
 	return FScalar::retBuffer;
 }
 
-// 对于22bit整数位的32bit定点数，pow的计算过程中精度丢失严重，几乎不可用
+// For 32-bit fixed-point numbers of 22-bit integer bits, the accuracy of the calculation of pow is seriously lost and almost impossible.
 FScalar & pow(const FScalar & base, const FScalar & exponential)
 {
 	FScalar logBase(log2(base).rawValue), logE(1.4427f);
@@ -103,9 +102,10 @@ FScalar & pow(const FScalar & base, const FScalar & exponential)
 
 //extern "C" int64_t _Div128_64(int64_t a_low, int64_t a_high, int64_t b, int64_t* ret);
 
-// 参数的值域为(0, 2097151.937f]：
-// 0的计算结果是负无穷，没有意义
-// 参数太大了基于int64的计算过程会发生溢出，无法得到正确结果，并且也已经非常接近22bit整数位的32bit定点数能够表达的最大值了。
+// The value range of the parameter is (0, 2097151.937f]:
+// The result of 0 is negative infinity, meaningless.
+// Too large parameter will cause the int64-based calculation process overflow and will not get the correct result,
+// and it is already very close to the maximum value that can be expressed by the 32-bit fixed-point number of 22-bit integer bits.
 FScalar & log2(const FScalar & fs)
 {
 	int32_t n;
@@ -115,9 +115,10 @@ FScalar & log2(const FScalar & fs)
 	return FScalar::retBuffer;
 }
 
-// 参数的值域为(0, 2097151.937f]：
-// 0的计算结果是负无穷，没有意义
-// 参数太大了基于int64的计算过程会发生溢出，无法得到正确结果，并且也已经非常接近22bit整数位的32bit定点数能够表达的最大值了。
+// The value range of the parameter is (0, 2097151.937f]:
+// The result of 0 is negative infinity, meaningless.
+// Too large parameter will cause the int64-based calculation process overflow and will not get the correct result,
+// and it is already very close to the maximum value that can be expressed by the 32-bit fixed-point number of 22-bit integer bits.
 FScalar & log(const FScalar & base, const FScalar & fs)
 {
 	int32_t fsValue = log2(fs).rawValue;
@@ -126,9 +127,10 @@ FScalar & log(const FScalar & base, const FScalar & fs)
 	return FScalar::retBuffer;
 }
 
-// 参数的值域为(-2.0, 14.5]：
-// 参数小于0的时候误差比较大，因为22bit整数位的32bit定位数无法表达那么高的小数精度。
-// 参数太大了基于int64的计算过程会发生溢出，无法得到正确结果，并且也已经非常接近22bit整数位的32bit定点数能够表达的最大值了。
+// The value range of the parameter is (-2.0, 14.5):
+// The error is larger when the parameter is less than 0, because the 32-bit positioning number of the 22-bit integer bit cannot express such a high decimal precision.
+// Too large parameter will cause the int64-based calculation process overflow and will not get the correct result,
+// and it is already very close to the maximum value that can be expressed by the 32-bit fixed-point number of 22-bit integer bits.
 FScalar & exp(const FScalar & fs)
 {
 	bool isNegative = fs.rawValue < 0;
@@ -284,8 +286,8 @@ FScalar & acos(const FScalar & fs)
 	return FScalar::retBuffer;
 }
 
-// 参数的值域为(0.001, 2097150.9f]：
-// 参数太大了基于int64的计算过程会发生溢出，无法得到正确结果。
+// The value range of the parameter is(0.001, 2097150.9f]:
+// Too large parameter will cause the int64 - based calculation process overflow and the correct result will not be obtained.
 FScalar & atan(const FScalar & fs)
 {
 	bool xbelow1 = fs.rawValue < FScalar::fractionRate;
