@@ -28,7 +28,7 @@ float Divide(const float f1, const float f2)
 
 // Since the Release version does a lot of optimizations on the test code itself and
 // can't get fair test data, you can only use Debug to run the following test code.
-void PerformanceCheck()
+void Benchmark()
 {
 	const int calculateTimes = 10000000;
 	float f1 = 12.5f, f2 = 0.25f;
@@ -150,7 +150,10 @@ void PerformanceCheck()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
+#pragma warning(push)
+#pragma warning(disable:4552)
 		log(f2) / log(f1);
+#pragma warning(pop)
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -263,7 +266,7 @@ void PerformanceCheck()
 
 int main()
 {
-	PerformanceCheck();
+	Benchmark();
 	int a;
 	cin >> a;
 }
