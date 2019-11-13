@@ -203,7 +203,11 @@ void PerformanceCheck()
 
 int main()
 {
-	PerformanceCheck();
+	//PerformanceCheck();
+	cout << sin(FScalar(2.47872f)) << endl;
+	cout << sin(FScalar(3.87673f)) << endl;
+	cout << cos(FScalar(2.47872f)) << endl;
+	cout << cos(FScalar(3.87673f)) << endl;
 	int a;
 	cin >> a;
 }

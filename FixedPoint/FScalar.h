@@ -30,6 +30,9 @@ public:
 	inline friend DllExport FScalar & sin(const FScalar & fs);
 	inline friend DllExport FScalar & cos(const FScalar & fs);
 	inline friend DllExport FScalar & asin(const FScalar & fs);
+	inline friend DllExport FScalar & acos(const FScalar & fs);
+	inline friend DllExport FScalar & atan(const FScalar & fs);
+	inline friend DllExport FScalar & acot(const FScalar & fs);
 
 private:
 	int32_t rawValue;
@@ -41,6 +44,7 @@ private:
 	
 	static FScalar retBuffer;
 
-	inline friend DllExport FScalar & _sin(const FScalar & fs);
-	inline friend DllExport FScalar & _cos(const FScalar & fs);
+	inline friend void calculateParameters(int32_t rawValue, bool nMustBeEven, int32_t& n, int64_t& x, int64_t& x2, int64_t& x4);
+	inline friend FScalar & _sin(const FScalar & fs);
+	inline friend FScalar & _cos(const FScalar & fs);
 };

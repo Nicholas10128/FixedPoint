@@ -6,6 +6,9 @@ FScalar FScalar::retBuffer(0);
 
 //const float e = 2.718281828459045f;
 const int32_t e = 2783;
+const int32_t pi = 3217;
+const int32_t pi_2 = pi >> 1;
+const int32_t pi2 = pi << 1;
 
 FScalar::FScalar(float floatValue)
 {
@@ -63,7 +66,7 @@ inline std::ostream & operator<<(std::ostream & os, const FScalar & fs)
 	return os;
 }
 
-void calculateParameters(int32_t rawValue, bool nMustBeEven, int32_t& n, int32_t& fenzi, int32_t& fenmu, int64_t& fenzi2, int64_t& fenzi4, int64_t& fenmu2, int64_t& fenmu4)
+void calculateParameters(int32_t rawValue, bool nMustBeEven, int32_t& n, int64_t& x, int64_t& x2, int64_t& x4)
 {
 	n = 31;
 	int32_t mask = 0x40000000;
@@ -74,27 +77,19 @@ void calculateParameters(int32_t rawValue, bool nMustBeEven, int32_t& n, int32_t
 	{
 		n++;
 	}
-	fenzi = rawValue;
-	fenmu = 1 << n;
-	while (fenzi > 4096)
-	{
-		fenzi >>= 1;
-		fenmu >>= 1;
-	}
-	fenzi2 = (int64_t)fenzi * fenzi;
-	fenzi4 = fenzi2 * fenzi2;
-	fenmu2 = (int64_t)fenmu * fenmu;
-	fenmu4 = fenmu2 * fenmu2;
+	x = (((int64_t)rawValue << FScalar::fractionBits) / (1i64 << n));
+	x2 = (int64_t)x * x >> FScalar::fractionBits;
+	x4 = x2 * x2 >> FScalar::fractionBits;
 }
 
-// 参数的值域为[0, 1048575.9]：
+// 参数的值域为[0, 2097151.937]：
 // 参数太大了基于int64的计算过程会发生溢出，无法得到正确结果。
 FScalar & sqrt(const FScalar & fs)
 {
-	int32_t n, fenzi, fenmu;
-	int64_t fenzi2, fenzi4, fenmu2, fenmu4;
-	calculateParameters(fs.rawValue, true, n, fenzi, fenmu, fenzi2, fenzi4, fenmu2, fenmu4);
-	FScalar::retBuffer.rawValue = (int32_t)((1i64 << ((n - FScalar::fractionBits) >> 1)) * (234 + (1331 * fenzi * fenmu2 * fenmu - 932 * fenzi2 * fenmu2 + 513 * fenzi2 * fenzi * fenmu - 125 * fenzi4) / fenmu4));
+	int32_t n;
+	int64_t x, x2, x4;
+	calculateParameters(fs.rawValue, true, n, x, x2, x4);
+	FScalar::retBuffer.rawValue = (int32_t)((1i64 << ((n - FScalar::fractionBits) >> 1)) * (234 + ((1331 * x - 932 * x2 + ((513 * x2) >> FScalar::fractionBits) * x - 125 * x4) >> FScalar::fractionBits)));
 	return FScalar::retBuffer;
 }
 
@@ -108,19 +103,19 @@ FScalar & pow(const FScalar & base, const FScalar & exponential)
 
 //extern "C" int64_t _Div128_64(int64_t a_low, int64_t a_high, int64_t b, int64_t* ret);
 
-// 参数的值域为(0, 1048575]：
+// 参数的值域为(0, 2097151.937f]：
 // 0的计算结果是负无穷，没有意义
 // 参数太大了基于int64的计算过程会发生溢出，无法得到正确结果，并且也已经非常接近22bit整数位的32bit定点数能够表达的最大值了。
 FScalar & log2(const FScalar & fs)
 {
-	int32_t n, fenzi, fenmu;
-	int64_t fenzi2, fenzi4, fenmu2, fenmu4;
-	calculateParameters(fs.rawValue, false, n, fenzi, fenmu, fenzi2, fenzi4, fenmu2, fenmu4);
-	FScalar::retBuffer.rawValue = (int32_t)(((n - FScalar::fractionBits) << FScalar::fractionBits) + (-6163 * fenmu4 + 28610 * fenzi * fenmu2 * fenmu - 60718 * fenzi2 * fenmu2 + 59463 * fenzi2 * fenzi * fenmu - 21202 * fenzi4) / fenmu4);
+	int32_t n;
+	int64_t x, x2, x4;
+	calculateParameters(fs.rawValue, false, n, x, x2, x4);
+	FScalar::retBuffer.rawValue = (int32_t)(((n - FScalar::fractionBits) << FScalar::fractionBits) - 6163 + ((28610 * x - 60718 * x2 + ((59463 * x2) >> FScalar::fractionBits) * x - 21202 * x4) >> FScalar::fractionBits));
 	return FScalar::retBuffer;
 }
 
-// 参数的值域为(0, 1048575]：
+// 参数的值域为(0, 2097151.937f]：
 // 0的计算结果是负无穷，没有意义
 // 参数太大了基于int64的计算过程会发生溢出，无法得到正确结果，并且也已经非常接近22bit整数位的32bit定点数能够表达的最大值了。
 FScalar & log(const FScalar & base, const FScalar & fs)
@@ -138,31 +133,18 @@ FScalar & exp(const FScalar & fs)
 {
 	bool isNegative = fs.rawValue < 0;
 	int32_t wholePart = (isNegative ? -fs.rawValue : fs.rawValue) >> FScalar::fractionBits;
-	int64_t wholeResult = 1;
-	for (int i = 0; i < wholePart && i < 3; i++)
+	int64_t wholeResult = 1 << FScalar::fractionBits;
+	for (int i = 0; i < wholePart; i++)
 	{
-		wholeResult *= e;
+		wholeResult = (wholeResult * e) >> FScalar::fractionBits;
 	}
-	for (int i = 3; i < wholePart; i++)
-	{
-		wholeResult *= e;
-		wholeResult >>= FScalar::fractionBits;
-	}
-	int32_t fenzi = fs.rawValue - (wholePart << FScalar::fractionBits);
-	int32_t fenmu = 1 << FScalar::fractionBits;
-	int64_t fenzi2 = fenzi * fenzi;
-	int64_t fenzi4 = fenzi2 * fenzi2;
-	int64_t fenmu2 = fenmu * fenmu;
-	int64_t fenmu4 = fenmu2 * fenmu2;
-	int64_t value64 = wholeResult * (1024 + (1023 * fenzi * fenmu2 * fenmu + 520 * fenzi2 * fenmu2 + 146 * fenzi2 * fenzi * fenmu + 69 * fenzi4) / fenmu4);
-	for (int i = 0; i < wholePart && i < 3; i++)
-	{
-		value64 >>= FScalar::fractionBits;
-	}
-	FScalar::retBuffer.rawValue = (int32_t)value64;
+	int32_t x = (int64_t(fs.rawValue - (wholePart << FScalar::fractionBits)) << FScalar::fractionBits) / (1 << FScalar::fractionBits);
+	int64_t x2 = (int64_t)x * x >> FScalar::fractionBits;
+	int64_t x4 = x2 * x2 >> FScalar::fractionBits;
+	FScalar::retBuffer.rawValue = (int32_t)(wholeResult * (1024 + ((1023 * x + 520 * x2 + ((146 * x2) >> FScalar::fractionBits) * x + 69 * x4) >> FScalar::fractionBits)) >> FScalar::fractionBits);
 	if (isNegative)
 	{
-		FScalar::retBuffer = FScalar(1) / FScalar::retBuffer;
+		FScalar::retBuffer = (int32_t)((1i64 << FScalar::fractionBits) / FScalar::retBuffer.rawValue);
 	}
 	return FScalar::retBuffer;
 }
@@ -193,13 +175,32 @@ FScalar & _cos(const FScalar & fs)
 
 FScalar & sin(const FScalar & fs)
 {
-	if (fs.rawValue >= 804)
+	int32_t rawValue = fs.rawValue;
+	if (rawValue >= 804)
 	{
-		FScalar theta_2(fs.rawValue >> 1);
+		while (rawValue >= pi2)
+		{
+			rawValue -= pi2;
+		}
+		bool isNegative = false;
+		if (rawValue >= pi)
+		{
+			rawValue -= pi;
+			isNegative = true;
+		}
+		else if (rawValue >= pi_2)
+		{
+			rawValue = pi - rawValue;
+		}
+		FScalar theta_2(rawValue >> 1);
 		int32_t sinTheta_2_rawValue = sin(theta_2).rawValue;
 		int32_t cosTheta_2_rawValue = cos(theta_2).rawValue;
 		FScalar::retBuffer.rawValue = ((int64_t)sinTheta_2_rawValue * cosTheta_2_rawValue) >> FScalar::fractionBits;
 		FScalar::retBuffer.rawValue <<= 1;
+		if (isNegative)
+		{
+			FScalar::retBuffer.rawValue = -FScalar::retBuffer.rawValue;
+		}
 		return FScalar::retBuffer;
 	}
 	return _sin(fs);
@@ -207,22 +208,73 @@ FScalar & sin(const FScalar & fs)
 
 FScalar & cos(const FScalar & fs)
 {
-	if (fs.rawValue >= 804)
+	int32_t rawValue = fs.rawValue;
+	if (rawValue >= 804)
 	{
-		FScalar theta_2(fs.rawValue >> 1);
+		while (rawValue >= pi2)
+		{
+			rawValue -= pi2;
+		}
+		bool isNegative = false;
+		if (rawValue >= pi)
+		{
+			rawValue = pi2 - rawValue;
+		}
+		else if (rawValue >= pi_2)
+		{
+			rawValue = pi - rawValue;
+			isNegative = true;
+		}
+		FScalar theta_2(rawValue >> 1);
 		int64_t cosTheta_2_rawValue = cos(theta_2).rawValue;
 		int64_t sinTheta_2_rawValue = sin(theta_2).rawValue;
 		cosTheta_2_rawValue *= cosTheta_2_rawValue;
 		cosTheta_2_rawValue >>= FScalar::fractionBits;
 		sinTheta_2_rawValue *= sinTheta_2_rawValue;
 		sinTheta_2_rawValue >>= FScalar::fractionBits;
-		FScalar::retBuffer.rawValue = cosTheta_2_rawValue - sinTheta_2_rawValue;
+		FScalar::retBuffer.rawValue = (int32_t)(cosTheta_2_rawValue - sinTheta_2_rawValue);
+		if (isNegative)
+		{
+			FScalar::retBuffer.rawValue = -FScalar::retBuffer.rawValue;
+		}
 		return FScalar::retBuffer;
 	}
 	return _cos(fs);
 }
 
+const int32_t atan1 = 804;
+
 FScalar & asin(const FScalar & fs)
+{
+	return FScalar::retBuffer;
+}
+
+FScalar & acos(const FScalar & fs)
+{
+	return FScalar::retBuffer;
+}
+
+// 参数的值域为(0.001, 2097150.9f]：
+// 参数太大了基于int64的计算过程会发生溢出，无法得到正确结果。
+FScalar & atan(const FScalar & fs)
+{
+	bool xbelow1 = fs.rawValue < (1 << FScalar::fractionBits);
+	int32_t x = fs.rawValue;
+	if (!xbelow1)
+	{
+		x = ((int64_t)(x - (1 << FScalar::fractionBits)) << FScalar::fractionBits) / (x + (1 << FScalar::fractionBits));
+	}
+	int64_t x2 = x * x >> FScalar::fractionBits;
+	int64_t x4 = x2 * x2 >> FScalar::fractionBits;
+	FScalar::retBuffer.rawValue = -1 + (int32_t)((1024 * x - x2 - (376 * x2 >> FScalar::fractionBits) * x + 155 * x4) >> FScalar::fractionBits);
+	if (!xbelow1)
+	{
+		FScalar::retBuffer.rawValue += atan1;
+	}
+	return FScalar::retBuffer;
+}
+
+FScalar & acot(const FScalar & fs)
 {
 	return FScalar::retBuffer;
 }
