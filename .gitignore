@@ -70,3 +70,6 @@ sysinfo.txt
 *.apk
 *.unitypackage
 Shipping/
+
+# Excel temp file
+~$*.xlsx
