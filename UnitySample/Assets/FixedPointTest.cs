@@ -21,7 +21,11 @@ public class FixedPointTest : MonoBehaviour
     [DllImport("FixedPoint")]
     static extern IntPtr Internal_Pow(IntPtr fs1, IntPtr fs2);
     [DllImport("FixedPoint")]
-    static extern IntPtr Internal_Log(IntPtr fs1, IntPtr fs2);
+    static extern IntPtr Internal_Log2(IntPtr fs);
+    [DllImport("FixedPoint")]
+    static extern IntPtr Internal_Log(IntPtr fs);
+    [DllImport("FixedPoint")]
+    static extern IntPtr Internal_Log10(IntPtr fs);
     [DllImport("FixedPoint")]
     static extern IntPtr Internal_Exp(IntPtr fs);
     [DllImport("FixedPoint")]
@@ -51,7 +55,9 @@ public class FixedPointTest : MonoBehaviour
         Debug.Log(Internal_GetFloatValue(Internal_Divide(fs1, fs2)));
         Debug.Log(Internal_GetFloatValue(Internal_Sqrt(fs1)));
         Debug.Log(Internal_GetFloatValue(Internal_Pow(fs1, fs2)));
-        Debug.Log(Internal_GetFloatValue(Internal_Log(fs1, fs2)));
+        Debug.Log(Internal_GetFloatValue(Internal_Log2(fs)));
+        Debug.Log(Internal_GetFloatValue(Internal_Log(fs)));
+        Debug.Log(Internal_GetFloatValue(Internal_Log10(fs)));
         Debug.Log(Internal_GetFloatValue(Internal_Exp(fs1)));
         Debug.Log(Internal_GetFloatValue(Internal_Sin(fs1)));
         Debug.Log(Internal_GetFloatValue(Internal_Cos(fs1)));

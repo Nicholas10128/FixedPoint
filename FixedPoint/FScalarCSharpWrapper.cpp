@@ -54,9 +54,14 @@ extern "C"
 		return &log2(*fs);
 	}
 
-	DllExport FScalar* Internal_Log(FScalar* base, FScalar* fs)
+	DllExport FScalar* Internal_Log(FScalar* fs)
 	{
-		return &log(*base, *fs);
+		return &log(*fs);
+	}
+
+	DllExport FScalar* Internal_Log10(FScalar* fs)
+	{
+		return &log10(*fs);
 	}
 
 	DllExport FScalar* Internal_Exp(FScalar* fs)

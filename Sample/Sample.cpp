@@ -26,25 +26,31 @@ float Divide(const float f1, const float f2)
 	return f1 / f2;
 }
 
+const int calculateTimes = 1000000;
+float randFloat[calculateTimes];
+FScalar randScalar[calculateTimes];
+
 // Since the Release version does a lot of optimizations on the test code itself and
 // can't get fair test data, you can only use Debug to run the following test code.
 void Benchmark()
 {
-	const int calculateTimes = 10000000;
-	float f1 = 12.5f, f2 = 0.25f;
-	FScalar fs1(f1), fs2(f2);
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		randFloat[i] = ((rand() % 1000) + 1) * 0.001f;
+		randScalar[i] = randFloat[i];
+	}
 	cout << "Start compare for + operator by calculate " << calculateTimes << " times." << endl;
 	DWORD now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		fs1 + fs2;
+		randScalar[i] + randScalar[i];
 	}
 	DWORD elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		Add(f1, f2);
+		Add(randFloat[i], randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -52,14 +58,14 @@ void Benchmark()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		fs1 - fs2;
+		randScalar[i] - randScalar[i];
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		Minus(f1, f2);
+		Minus(randFloat[i], randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -67,14 +73,14 @@ void Benchmark()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		fs1 * fs2;
+		randScalar[i] * randScalar[i];
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		Multiply(f1, f2);
+		Multiply(randFloat[i], randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -82,30 +88,29 @@ void Benchmark()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		fs1 / fs2;
+		randScalar[i] / randScalar[i];
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		Divide(f1, f2);
+		Divide(randFloat[i], randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
-	//
 	cout << "Start compare for sqrt function by calculate " << calculateTimes << " times." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		sqrt(fs1);
+		sqrt(randScalar[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		sqrt(f1);
+		sqrt(randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -113,14 +118,14 @@ void Benchmark()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		pow(fs1, fs2);
+		pow(randScalar[i], randScalar[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		pow(f1, f2);
+		pow(randFloat[i], randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -128,14 +133,14 @@ void Benchmark()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		log2(fs1);
+		log2(randScalar[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		log2(f1);
+		log2(randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -143,17 +148,29 @@ void Benchmark()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		log(fs1, fs2);
+		log(randScalar[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-#pragma warning(push)
-#pragma warning(disable:4552)
-		log(f2) / log(f1);
-#pragma warning(pop)
+		log(randFloat[i]);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "General float use " << elapsed << "ms." << endl;
+	cout << "Start compare for log10 function by calculate " << calculateTimes << " times." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		log10(randScalar[i]);
+	}
+	elapsed = GetTickCount() - now;
+	cout << "Fixed point use " << elapsed << "ms." << endl;
+	now = GetTickCount();
+	for (int i = 0; i < calculateTimes; i++)
+	{
+		log10(randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -161,14 +178,14 @@ void Benchmark()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		exp(fs1);
+		exp(randScalar[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		exp(f1);
+		exp(randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -176,14 +193,14 @@ void Benchmark()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		sin(fs1);
+		sin(randScalar[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		sin(f1);
+		sin(randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -191,14 +208,14 @@ void Benchmark()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		cos(fs1);
+		cos(randScalar[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		cos(f1);
+		cos(randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -206,14 +223,14 @@ void Benchmark()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		asin(fs1);
+		asin(randScalar[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		asin(f1);
+		asin(randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -221,14 +238,14 @@ void Benchmark()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		acos(fs1);
+		acos(randScalar[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		acos(f1);
+		acos(randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -236,14 +253,14 @@ void Benchmark()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		atan(fs1);
+		atan(randScalar[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		atan(f1);
+		atan(randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;
@@ -251,14 +268,14 @@ void Benchmark()
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		acot(fs1);
+		acot(randScalar[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "Fixed point use " << elapsed << "ms." << endl;
 	now = GetTickCount();
 	for (int i = 0; i < calculateTimes; i++)
 	{
-		atan(1.0 / f1);
+		atan(1.0 / randFloat[i]);
 	}
 	elapsed = GetTickCount() - now;
 	cout << "General float use " << elapsed << "ms." << endl;

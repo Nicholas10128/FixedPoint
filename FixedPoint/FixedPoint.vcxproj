@@ -168,6 +168,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <MASM Include="_Bit_Scan_32.asm" />
     <MASM Include="_Div128_64.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
