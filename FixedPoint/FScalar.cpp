@@ -326,7 +326,37 @@ inline FScalar & asin(const FScalar & fs) noexcept
 		return FScalar::retBuffer;
 	}
 	int64_t x2 = (int64_t)x * x >> FScalar::fractionBits;
-	int32_t fenmu = sqrt(FScalar((int32_t)((1i64 << FScalar::fractionBits) - x2))).rawValue;
+	int32_t rawValue = (int32_t)((1i64 << FScalar::fractionBits) - x2);
+	int32_t fenmu = 0;
+	if (rawValue == 0)
+	{
+		fenmu = 0;
+	}
+	else
+	{
+		int32_t n = _bsr_32(rawValue) + 1;
+		int64_t x, x2, x4;
+		x = (((int64_t)rawValue << FScalar::fractionBits) / (1i64 << n));
+		x2 = (int64_t)x * x >> FScalar::fractionBits;
+		x4 = x2 * x2 >> FScalar::fractionBits;
+		int32_t extra = n - FScalar::fractionBits;
+		int32_t sqrt2 = FScalar::fractionRate;
+		int64_t result = 234 + ((1331 * x - 932 * x2 + ((513 * x2) >> FScalar::fractionBits) * x - 125 * x4) >> FScalar::fractionBits);
+		if (n % 2 != 0)
+		{
+			sqrt2 = sqrt_2;
+		}
+		if (extra >= 0)
+		{
+			extra = (1i64 << (extra >> 1)) * sqrt2;
+			fenmu = (int32_t)(extra * result >> FScalar::fractionBits);
+		}
+		else
+		{
+			extra = (1i64 << (-extra >> 1)) * sqrt2;
+			fenmu = (int32_t)((result << FScalar::fractionBits) / extra);
+		}
+	}
 	x = (int32_t)((int64_t)x << FScalar::fractionBits) / fenmu;
 	bool isNegative = x < 0;
 	if (isNegative)
@@ -363,7 +393,38 @@ inline FScalar & acos(const FScalar & fs) noexcept
 		return FScalar::retBuffer;
 	}
 	int64_t x2 = (int64_t)x * x >> FScalar::fractionBits;
-	int32_t fenzi = sqrt(FScalar((int32_t)((1i64 << FScalar::fractionBits) - x2))).rawValue;
+	//
+	int32_t rawValue = (int32_t)((1i64 << FScalar::fractionBits) - x2);
+	int32_t fenzi = 0;
+	if (rawValue == 0)
+	{
+		fenzi = 0;
+	}
+	else
+	{
+		int32_t n = _bsr_32(rawValue) + 1;
+		int64_t x, x2, x4;
+		x = (((int64_t)rawValue << FScalar::fractionBits) / (1i64 << n));
+		x2 = (int64_t)x * x >> FScalar::fractionBits;
+		x4 = x2 * x2 >> FScalar::fractionBits;
+		int32_t extra = n - FScalar::fractionBits;
+		int32_t sqrt2 = FScalar::fractionRate;
+		int64_t result = 234 + ((1331 * x - 932 * x2 + ((513 * x2) >> FScalar::fractionBits) * x - 125 * x4) >> FScalar::fractionBits);
+		if (n % 2 != 0)
+		{
+			sqrt2 = sqrt_2;
+		}
+		if (extra >= 0)
+		{
+			extra = (1i64 << (extra >> 1)) * sqrt2;
+			fenzi = (int32_t)(extra * result >> FScalar::fractionBits);
+		}
+		else
+		{
+			extra = (1i64 << (-extra >> 1)) * sqrt2;
+			fenzi = (int32_t)((result << FScalar::fractionBits) / extra);
+		}
+	}
 	if (isNegative)
 	{
 		x = (int32_t)((int64_t)fenzi << FScalar::fractionBits) / (-x);
